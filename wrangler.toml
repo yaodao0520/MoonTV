@@ -1,4 +1,4 @@
-name = "yaodao"
+name = "yaodaotv"
 compatibility_date = "2025-07-01"
 
 # 指定 Pages 产物目录，供 `wrangler pages dev` 本地预览使用
