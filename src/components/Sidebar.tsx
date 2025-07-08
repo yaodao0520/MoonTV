@@ -170,8 +170,8 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
   if (siteName !== 'MoonTV') {
     menuItems.push({
       icon: Github,
-      label: 'MoonTV',
-      href: 'https://github.com/senshinya/MoonTV',
+      label: '打赏作者',
+      href: '/donate',
     });
   }
 
