@@ -113,6 +113,26 @@
     "hgdj": {
      "api": "https://www.hgdj.app/",
     "name": "红果短剧"
+    },
+    "subo": {
+     "api": "https://subocj.com/api.php/provide/vod",
+    "name": "速播资源"
+    },
+    "jinying": {
+     "api": "https://subocj.com/api.php/provide/vod",
+    "name": "金鹰资源"
+    },
+    "taopian": {
+     "api": "https://taopianapi.com/cjapi/sda/vod",
+    "name": "淘片资源"
+    },
+    "niuniu": {
+     "api": "https://api.niuniuzy.me/api.php/provide/vod",
+    "name": "牛牛资源"  
+    },
+    "haohua": {
+     "api": "https://hhzyapi.com/api.php/provide/vod",
+    "name": "豪华资源"  
     }
   }
 }
