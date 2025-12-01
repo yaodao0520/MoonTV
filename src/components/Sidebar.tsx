@@ -140,6 +140,22 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
       label: '综艺',
       href: '/douban?type=show',
     },
+    { icon: Swords, label: '美剧', href: '/douban?type=tv&tag=美剧' },
+    {
+      icon: MessageCircleHeart,
+      label: '韩剧',
+      href: '/douban?type=tv&tag=韩剧',
+    },
+    { icon: MountainSnow, label: '日剧', href: '/douban?type=tv&tag=日剧' },
+    { icon: VenetianMask, label: '日漫', href: '/douban?type=tv&tag=日本动画' },
+  ];
+
+  const { siteName } = useSite();
+  if (siteName !== 'MoonTV') {
+    menuItems.push({
+      icon: Github,
+      label: '打赏作者',
+      href: '/donate',  
   ]);
 
   useEffect(() => {
