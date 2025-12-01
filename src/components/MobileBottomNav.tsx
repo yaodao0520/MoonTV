@@ -54,7 +54,6 @@ const MobileBottomNav = ({ activePath }: MobileBottomNavProps) => {
       icon: Github,
       label: '打赏作者',
       href: '/donate',
-    });
   }
 
   useEffect(() => {
