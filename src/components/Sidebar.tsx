@@ -156,8 +156,7 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
       icon: Github,
       label: '打赏作者',
       href: '/donate',  
-  ]);
-
+  }
   useEffect(() => {
     const runtimeConfig = (window as any).RUNTIME_CONFIG;
     if (runtimeConfig?.CUSTOM_CATEGORIES?.length > 0) {
