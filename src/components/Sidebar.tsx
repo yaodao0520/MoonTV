@@ -2,7 +2,20 @@
 
 'use client';
 
-import { Clover, Film, Home, Menu, Search, Star, Tv } from 'lucide-react';
+import {
+  Clover,
+  Film,
+  Home,
+  Menu,
+  Search,
+  Star,
+  Tv,
+  Swords,
+  MessageCircleHeart,
+  MountainSnow,
+  VenetianMask,
+  Github,
+} from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import {
@@ -57,6 +70,8 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { siteName } = useSite();
+
   // 若同一次 SPA 会话中已经读取过折叠状态，则直接复用，避免闪烁
   const [isCollapsed, setIsCollapsed] = useState<boolean>(() => {
     if (
@@ -148,26 +163,42 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
     },
     { icon: MountainSnow, label: '日剧', href: '/douban?type=tv&tag=日剧' },
     { icon: VenetianMask, label: '日漫', href: '/douban?type=tv&tag=日本动画' },
-  ];
+  ]);
 
-  const { siteName } = useSite();
-  if (siteName !== 'MoonTV') {
-    menuItems.push({
-      icon: Github,
-      label: '打赏作者',
-      href: '/donate',  
-  }
+  // 根据 siteName 追加“打赏作者”
+  useEffect(() => {
+    if (siteName !== 'MoonTV') {
+      setMenuItems((prev) => {
+        if (prev.some((item) => item.href === '/donate')) return prev;
+        return [
+          ...prev,
+          {
+            icon: Github,
+            label: '打赏作者',
+            href: '/donate',
+          },
+        ];
+      });
+    }
+  }, [siteName]);
+
+  // 根据 runtimeConfig 追加“自定义”
   useEffect(() => {
     const runtimeConfig = (window as any).RUNTIME_CONFIG;
     if (runtimeConfig?.CUSTOM_CATEGORIES?.length > 0) {
-      setMenuItems((prevItems) => [
-        ...prevItems,
-        {
-          icon: Star,
-          label: '自定义',
-          href: '/douban?type=custom',
-        },
-      ]);
+      setMenuItems((prevItems) => {
+        if (prevItems.some((item) => item.href === '/douban?type=custom')) {
+          return prevItems;
+        }
+        return [
+          ...prevItems,
+          {
+            icon: Star,
+            label: '自定义',
+            href: '/douban?type=custom',
+          },
+        ];
+      });
     }
   }, []);
 
@@ -253,16 +284,15 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
             <div className='flex-1 overflow-y-auto px-2 pt-4'>
               <div className='space-y-1'>
                 {menuItems.map((item) => {
-                  // 检查当前路径是否匹配这个菜单项
                   const typeMatch = item.href.match(/type=([^&]+)/)?.[1];
 
-                  // 解码URL以进行正确的比较
                   const decodedActive = decodeURIComponent(active);
                   const decodedItemHref = decodeURIComponent(item.href);
 
                   const isActive =
                     decodedActive === decodedItemHref ||
                     (decodedActive.startsWith('/douban') &&
+                      typeMatch &&
                       decodedActive.includes(`type=${typeMatch}`));
                   const Icon = item.icon;
                   return (
