@@ -2,10 +2,29 @@
 
 'use client';
 
-import { Clover, Film, Home, Search, Star, Tv } from 'lucide-react';
+import {
+  Clover,
+  Film,
+  Home,
+  Search,
+  Star,
+  Tv,
+  Swords,
+  MessageCircleHeart,
+  MountainSnow,
+  VenetianMask,
+  Github,
+} from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useSite } from './SiteProvider';
+
+interface NavItem {
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  label: string;
+  href: string;
+}
 
 interface MobileBottomNavProps {
   /**
@@ -16,11 +35,12 @@ interface MobileBottomNavProps {
 
 const MobileBottomNav = ({ activePath }: MobileBottomNavProps) => {
   const pathname = usePathname();
+  const { siteName } = useSite();
 
   // 当前激活路径：优先使用传入的 activePath，否则回退到浏览器地址
   const currentActive = activePath ?? pathname;
 
-  const [navItems, setNavItems] = useState([
+  const [navItems, setNavItems] = useState<NavItem[]>([
     { icon: Home, label: '首页', href: '/' },
     { icon: Search, label: '搜索', href: '/search' },
     {
@@ -46,27 +66,42 @@ const MobileBottomNav = ({ activePath }: MobileBottomNavProps) => {
     },
     { icon: MountainSnow, label: '日剧', href: '/douban?type=tv&tag=日剧' },
     { icon: VenetianMask, label: '日漫', href: '/douban?type=tv&tag=日本动画' },
-  ];
+  ]);
 
-  const { siteName } = useSite();
-  if (siteName !== 'MoonTV') {
-    navItems.push({
-      icon: Github,
-      label: '打赏作者',
-      href: '/donate',
-  }
+  // 根据 siteName 追加“打赏作者”
+  useEffect(() => {
+    if (siteName !== 'MoonTV') {
+      setNavItems((prev) => {
+        if (prev.some((item) => item.href === '/donate')) return prev;
+        return [
+          ...prev,
+          {
+            icon: Github,
+            label: '打赏作者',
+            href: '/donate',
+          },
+        ];
+      });
+    }
+  }, [siteName]);
 
+  // 根据 runtimeConfig 追加“自定义”
   useEffect(() => {
     const runtimeConfig = (window as any).RUNTIME_CONFIG;
     if (runtimeConfig?.CUSTOM_CATEGORIES?.length > 0) {
-      setNavItems((prevItems) => [
-        ...prevItems,
-        {
-          icon: Star,
-          label: '自定义',
-          href: '/douban?type=custom',
-        },
-      ]);
+      setNavItems((prevItems) => {
+        if (prevItems.some((item) => item.href === '/douban?type=custom')) {
+          return prevItems;
+        }
+        return [
+          ...prevItems,
+          {
+            icon: Star,
+            label: '自定义',
+            href: '/douban?type=custom',
+          },
+        ];
+      });
     }
   }, []);
 
@@ -80,6 +115,7 @@ const MobileBottomNav = ({ activePath }: MobileBottomNavProps) => {
     return (
       decodedActive === decodedItemHref ||
       (decodedActive.startsWith('/douban') &&
+        typeMatch &&
         decodedActive.includes(`type=${typeMatch}`))
     );
   };
@@ -97,6 +133,8 @@ const MobileBottomNav = ({ activePath }: MobileBottomNavProps) => {
       <ul className='flex items-center overflow-x-auto scrollbar-hide'>
         {navItems.map((item) => {
           const active = isActive(item.href);
+          const Icon = item.icon;
+
           return (
             <li
               key={item.href}
@@ -107,7 +145,7 @@ const MobileBottomNav = ({ activePath }: MobileBottomNavProps) => {
                 href={item.href}
                 className='flex flex-col items-center justify-center w-full h-14 gap-1 text-xs'
               >
-                <item.icon
+                <Icon
                   className={`h-6 w-6 ${
                     active
                       ? 'text-green-600 dark:text-green-400'
