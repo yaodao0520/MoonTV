@@ -1,8 +1,21 @@
 'use client';
 
-import { Clover, Film, Home, Search, Tv } from 'lucide-react';
+import {
+  Clover,
+  Film,
+  Github,
+  Home,
+  MessageCircleHeart,
+  MountainSnow,
+  Search,
+  Star,
+  Swords,
+  Tv,
+  VenetianMask,
+} from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useSite } from './SiteProvider';
 
 interface MobileBottomNavProps {
   /**
@@ -17,24 +30,50 @@ const MobileBottomNav = ({ activePath }: MobileBottomNavProps) => {
   // 当前激活路径：优先使用传入的 activePath，否则回退到浏览器地址
   const currentActive = activePath ?? pathname;
 
-  const navItems = [
-    { icon: Home, label: '首页', href: '/' },
-    { icon: Search, label: '搜索', href: '/search' },
+  const menuItems = [
     {
       icon: Film,
-      label: '电影',
-      href: '/douban?type=movie',
+      label: '热门电影',
+      href: '/douban?type=movie&tag=热门&title=热门电影',
     },
     {
       icon: Tv,
-      label: '剧集',
-      href: '/douban?type=tv',
+      label: '热门剧集',
+      href: '/douban?type=tv&tag=热门&title=热门剧集',
+    },
+    {
+      icon: Star,
+      label: 'Top250',
+      href: '/douban?type=movie&tag=top250&title=豆瓣 Top250',
     },
     {
       icon: Clover,
       label: '综艺',
-      href: '/douban?type=show',
+      href: '/douban?type=tv&tag=综艺&title=综艺',
     },
+    { icon: Swords, label: '美剧', href: '/douban?type=tv&tag=美剧' },
+    {
+      icon: MessageCircleHeart,
+      label: '韩剧',
+      href: '/douban?type=tv&tag=韩剧',
+    },
+    { icon: MountainSnow, label: '日剧', href: '/douban?type=tv&tag=日剧' },
+    { icon: VenetianMask, label: '日漫', href: '/douban?type=tv&tag=日本动画' },
+  ];
+
+  const { siteName } = useSite();
+  if (siteName !== 'MoonTV') {
+    menuItems.push({
+      icon: Github,
+      label: '打赏',
+      href: '/donate',
+    });
+  }
+
+  const navItems = [
+    { icon: Home, label: '首页', href: '/' },
+    { icon: Search, label: '搜索', href: '/search' },
+    ...menuItems,
   ];
 
   const isActive = (href: string) => {
@@ -61,8 +100,8 @@ const MobileBottomNav = ({ activePath }: MobileBottomNavProps) => {
         minHeight: 'calc(3.5rem + env(safe-area-inset-bottom))',
       }}
     >
-      <ul className='flex items-center'>
-        {navItems.map((item) => {
+      <ul className='flex items-center justify-around'>
+        {navItems.slice(0, 5).map((item) => {
           const active = isActive(item.href);
           return (
             <li key={item.href} className='flex-shrink-0 w-1/5'>
