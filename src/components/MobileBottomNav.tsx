@@ -1,16 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 'use client';
 
-import {
-  Clover,
-  Film,
-  Github,
-  Home,
-  Search,
-  Star,
-  Tv,
-} from 'lucide-react';
+import { Clover, Film, Home, Search, Star, Tv } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 interface MobileBottomNavProps {
   /**
@@ -25,36 +20,39 @@ const MobileBottomNav = ({ activePath }: MobileBottomNavProps) => {
   // 当前激活路径：优先使用传入的 activePath，否则回退到浏览器地址
   const currentActive = activePath ?? pathname;
 
-  // 导航项配置 - 只包含：首页、搜索、热门电影、热门剧集、豆瓣Top250、综艺、打赏
-  const navItems = [
+  const [navItems, setNavItems] = useState([
     { icon: Home, label: '首页', href: '/' },
     { icon: Search, label: '搜索', href: '/search' },
     {
       icon: Film,
-      label: '热门电影',
-      href: '/douban?type=movie&tag=热门&title=热门电影',
+      label: '电影',
+      href: '/douban?type=movie',
     },
     {
       icon: Tv,
-      label: '热门剧集',
-      href: '/douban?type=tv&tag=热门&title=热门剧集',
-    },
-    {
-      icon: Star,
-      label: 'Top250',
-      href: '/douban?type=movie&tag=top250&title=豆瓣 Top250',
+      label: '剧集',
+      href: '/douban?type=tv',
     },
     {
       icon: Clover,
       label: '综艺',
-      href: '/douban?type=tv&tag=综艺&title=综艺',
+      href: '/douban?type=show',
     },
-    {
-      icon: Github,
-      label: '打赏',
-      href: '/donate',
-    },
-  ];
+  ]);
+
+  useEffect(() => {
+    const runtimeConfig = (window as any).RUNTIME_CONFIG;
+    if (runtimeConfig?.CUSTOM_CATEGORIES?.length > 0) {
+      setNavItems((prevItems) => [
+        ...prevItems,
+        {
+          icon: Star,
+          label: '自定义',
+          href: '/douban?type=custom',
+        },
+      ]);
+    }
+  }, []);
 
   const isActive = (href: string) => {
     const typeMatch = href.match(/type=([^&]+)/)?.[1];
@@ -80,11 +78,15 @@ const MobileBottomNav = ({ activePath }: MobileBottomNavProps) => {
         minHeight: 'calc(3.5rem + env(safe-area-inset-bottom))',
       }}
     >
-      <ul className='flex items-center justify-around'>
-        {navItems.slice(0, 5).map((item) => {
+      <ul className='flex items-center overflow-x-auto scrollbar-hide'>
+        {navItems.map((item) => {
           const active = isActive(item.href);
           return (
-            <li key={item.href} className='flex-shrink-0 w-1/5'>
+            <li
+              key={item.href}
+              className='flex-shrink-0'
+              style={{ width: '20vw', minWidth: '20vw' }}
+            >
               <Link
                 href={item.href}
                 className='flex flex-col items-center justify-center w-full h-14 gap-1 text-xs'
