@@ -5,17 +5,12 @@ import {
   Film,
   Github,
   Home,
-  MessageCircleHeart,
-  MountainSnow,
   Search,
   Star,
-  Swords,
   Tv,
-  VenetianMask,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useSite } from './SiteProvider';
 
 interface MobileBottomNavProps {
   /**
@@ -30,7 +25,10 @@ const MobileBottomNav = ({ activePath }: MobileBottomNavProps) => {
   // 当前激活路径：优先使用传入的 activePath，否则回退到浏览器地址
   const currentActive = activePath ?? pathname;
 
-  const menuItems = [
+  // 导航项配置 - 只包含：首页、搜索、热门电影、热门剧集、豆瓣Top250、综艺、打赏
+  const navItems = [
+    { icon: Home, label: '首页', href: '/' },
+    { icon: Search, label: '搜索', href: '/search' },
     {
       icon: Film,
       label: '热门电影',
@@ -51,29 +49,11 @@ const MobileBottomNav = ({ activePath }: MobileBottomNavProps) => {
       label: '综艺',
       href: '/douban?type=tv&tag=综艺&title=综艺',
     },
-    { icon: Swords, label: '美剧', href: '/douban?type=tv&tag=美剧' },
     {
-      icon: MessageCircleHeart,
-      label: '韩剧',
-      href: '/douban?type=tv&tag=韩剧',
-    },
-    { icon: MountainSnow, label: '日剧', href: '/douban?type=tv&tag=日剧' },
-    { icon: VenetianMask, label: '日漫', href: '/douban?type=tv&tag=日本动画' },
-  ];
-
-  const { siteName } = useSite();
-  if (siteName !== 'MoonTV') {
-    menuItems.push({
       icon: Github,
       label: '打赏',
       href: '/donate',
-    });
-  }
-
-  const navItems = [
-    { icon: Home, label: '首页', href: '/' },
-    { icon: Search, label: '搜索', href: '/search' },
-    ...menuItems,
+    },
   ];
 
   const isActive = (href: string) => {
