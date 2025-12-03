@@ -1,6 +1,15 @@
 'use client';
 
-import { Clover, Film, Home, Menu, Search, Tv } from 'lucide-react';
+import {
+  Clover,
+  Film,
+  Github,
+  Home,
+  Menu,
+  Search,
+  Star,
+  Tv,
+} from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import {
@@ -122,21 +131,32 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
     isCollapsed,
   };
 
+  // 菜单项配置 - 只包含：热门电影、热门剧集、豆瓣Top250、综艺、打赏作者
   const menuItems = [
     {
       icon: Film,
-      label: '电影',
-      href: '/douban?type=movie',
+      label: '热门电影',
+      href: '/douban?type=movie&tag=热门&title=热门电影',
     },
     {
       icon: Tv,
-      label: '剧集',
-      href: '/douban?type=tv',
+      label: '热门剧集',
+      href: '/douban?type=tv&tag=热门&title=热门剧集',
+    },
+    {
+      icon: Star,
+      label: '豆瓣 Top250',
+      href: '/douban?type=movie&tag=top250&title=豆瓣 Top250',
     },
     {
       icon: Clover,
       label: '综艺',
-      href: '/douban?type=show',
+      href: '/douban?type=tv&tag=综艺&title=综艺',
+    },
+    {
+      icon: Github,
+      label: '打赏作者',
+      href: '/donate',
     },
   ];
 
@@ -243,7 +263,7 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
                       href={item.href}
                       onClick={() => setActive(item.href)}
                       data-active={isActive}
-                      className={`group flex items-center rounded-lg px-2 py-2 pl-4 text-sm text-gray-700 hover:bg-gray-100/30 hover:text-green-600 data-[active=true]:bg-green-500/20 data-[active=true]:text-green-700 transition-colors duration-200 min-h-[40px] dark:text-gray-300 dark:hover:text-green-400 dark:data-[active=true]:bg-green-500/10 dark:data-[active=true]:text-green-400 ${
+                      className={`group flex items-center rounded-lg px-2 py-2 pl-4 text-sm text-gray-700 hover:bg-gray-100/30 hover:text-green-600 data-[active=true]:bg-green-500/20 data-[active=true]:text-green-700 transition-colors duration-200 min-h-[40px] dark:text-gray-300 dark:hover:text-green-400 data-[active=true]:bg-green-500/10 dark:data-[active=true]:text-green-400 ${
                         isCollapsed ? 'w-full max-w-none mx-0' : 'mx-0'
                       } gap-3 justify-start`}
                     >
